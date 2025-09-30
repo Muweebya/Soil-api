@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
 require('dotenv').config();
 
-const Sensor = require('./models/Sensor');
-const SoilData = require('./models/SoilData');
+const Sensor = require('../models/Sensor');
+const SoilData = require('../models/SoilData');
 
 async function seedDatabase() {
   try {
@@ -16,7 +16,7 @@ async function seedDatabase() {
     // Clear existing data
     await Sensor.deleteMany({});
     await SoilData.deleteMany({});
-    console.log('🗑 Cleared old data');
+    console.log('Cleared old data');
 
     // Generate fake sensors
     const sensors = [];
@@ -64,7 +64,7 @@ async function seedDatabase() {
     });
 
     await SoilData.insertMany(soilData);
-    console.log(`🌱 Inserted ${soilData.length} soil readings`);
+    console.log(` Inserted ${soilData.length} soil readings`);
 
     process.exit(0);
   } catch (err) {
