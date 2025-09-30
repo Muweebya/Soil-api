@@ -1,73 +1,63 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const SoilData = require('../models/SoilData');
 
-// Import models
-const Soil = require("../models/Soil");
-const Device = require("../models/Device");
-
-
-// Main soil data endpoint
-app.post('/api/v1/soil-data', validateDevice, async (req, res) => {
+// Add soil reading
+router.post('/', async (req, res) => {
   try {
-    // Extract data from request body
-    const { deviceId, location, timestamp, sensorData } = req.body;
-    
-    // Validate required fields
-    if (!deviceId || !location || !sensorData) {
-      return res.status(400).json({
-        error: 'Missing required data',
-        message: 'deviceId, location, and sensorData are required'
-      });
-    }
-    
-    // Process and clean the data
-    const processedData = {
-      deviceId: deviceId,
-      location: {
-        coordinates: [location.longitude, location.latitude], // GeoJSON format
-        district: location.district,
-        subcounty: location.subcounty
-      },
-      timestamp: timestamp ? new Date(timestamp) : new Date(),
-      soil: {
-        ph: parseFloat(sensorData.ph),
-        moisture: parseFloat(sensorData.moisture),
-        temperature: parseFloat(sensorData.temperature),
-        nitrogen: parseFloat(sensorData.nitrogen),
-        phosphorus: parseFloat(sensorData.phosphorus),
-        potassium: parseFloat(sensorData.potassium)
-      },
-      receivedAt: new Date() // When server received the data
-    };
-    
-    // Save to database
-    const soilReading = new SoilData(processedData);
-    await soilReading.save();
-    
-    // Update device's last seen timestamp
-    await IoTDevice.findByIdAndUpdate(req.device._id, {
-      lastSeen: new Date(),
-      lastLocation: processedData.location
-    });
-    
-    // Send success response back to IoT device
-    res.status(201).json({
-      success: true,
-      message: 'Soil data received successfully',
-      dataId: soilReading._id,
-      processedAt: new Date().toISOString()
-    });
-    
-    // Optional: Trigger real-time updates or alerts
-    // socketIO.emit('new-soil-data', processedData);
-    // checkForSoilAlerts(processedData);
-    
-  } catch (error) {
-    console.error('Error processing soil data:', error);
-    res.status(500).json({
-      error: 'Processing failed',
-      message: 'Unable to process soil data'
-    });
+    const soilData = new SoilData(req.body);
+    await soilData.save();
+    res.status(201).json(soilData);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
+
+// Get all soil readings
+router.get('/', async (req, res) => {
+  try {
+    const data = await SoilData.find().sort({ timestamp: -1 }).limit(100);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get readings by sensor
+router.get('/sensor/:sensorId', async (req, res) => {
+  try {
+    const data = await SoilData.find({ sensorId: req.params.sensorId }).sort({ timestamp: -1 });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Query by district
+router.get('/district/:district', async (req, res) => {
+  try {
+    const data = await SoilData.find({ 'location.district': req.params.district }).sort({ timestamp: -1 });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Query by geolocation
+router.get('/near', async (req, res) => {
+  try {
+    const { lng, lat, radius } = req.query;
+    const data = await SoilData.find({
+      'location.coordinates': {
+        $geoWithin: {
+          $centerSphere: [[parseFloat(lng), parseFloat(lat)], radius / 6378137]
+        }
+      }
+    });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

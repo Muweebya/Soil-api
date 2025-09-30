@@ -1,54 +1,27 @@
-
-//Dependencies
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
-const passport = require('passport');
-
-//import user model
-const soil = require("./models/Soil");
-
-
+const sensorRoutes = require('./routes/sensorRoutes');
+const soilRoutes = require('./routes/soilRoutes');
 require('dotenv').config();
-//instantiations
+
 const app = express();
-const PORT = 3001;
-//import routes
-const soilRoutes = require("./routes/soilRoutes");
+const PORT = process.env.PORT || 5000;
 
-app.use('/api/v1/soil', soilRoutes);
-app.use('/api/v1/devices', deviceRoutes);
+// Middleware
+app.use(express.json());
 
+// Routes
+app.use('/api/sensors', sensorRoutes);
+app.use('/api/soil', soilRoutes);
 
-//configurations
-app.locals.moment = moment;
-mongoose.connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  
-  mongoose.connection
-    .on('open', () => {
-      console.log('Mongoose connection open');
-    })
-    .on('error', (err) => {
-      console.log(`Connection error: ${err.message}`);
-    });
-app.set("view engine", "pug")
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log('MongoDB connected');
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+})
+.catch(err => console.error('MongoDB connection error:', err));
 
-
-//middleware
-//express session configs
-app.use(session);
-app.use(passport.initialize());
-app.use(passport.session());
-//passport configs
-
-//routes/using imported routes
-app.use("/", soilRoutes)
-app.use("/", deviceRoutes)
-
-
-
-//bootstraping the server
-app.listen(PORT, () => console.log(`listening on port ${PORT}`))
