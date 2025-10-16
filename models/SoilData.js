@@ -22,12 +22,16 @@ const SoilDataSchema = new mongoose.Schema({
   soil: {
     ph: { type: Number, required: true, min: 0, max: 14 },
     moisture: { type: Number, required: true, min: 0, max: 100 },
+    humidity: { type: Number, required: false, min: 0, max: 100 }, 
     temperature: { type: Number, required: true, min: -10, max: 60 },
     nitrogen: Number,
     phosphorus: Number,
     potassium: Number,
     electricalConductivity: Number,
     organicMatter: Number
+    //HUMIDITY
+
+
   },
 
   timestamp: {
