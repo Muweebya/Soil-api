@@ -13,8 +13,7 @@ function generateSoilReading() {
     nitrogen: +(Math.random() * 50).toFixed(2),
     phosphorus: +(Math.random() * 30).toFixed(2),
     potassium: +(Math.random() * 40).toFixed(2),
-    electricalConductivity: +(Math.random() * 5).toFixed(2),
-    organicMatter: +(Math.random() * 10).toFixed(2),
+    
     
   };
 }
@@ -32,7 +31,7 @@ async function generateHourlyAverages() {
     const timestamp = new Date(now.setMinutes(0, 0, 0)); // top of the hour
 
     const readings = sensors.map(sensor => ({
-      deviceId: sensor.sensorId,
+      sensorId: sensor.sensorId,
       location: sensor.location,
       soil: generateSoilReading(),
       timestamp,

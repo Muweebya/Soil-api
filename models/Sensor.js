@@ -11,14 +11,11 @@ const SensorSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  type: {
-    type: String, // e.g. "soil_probe", "drone_sensor"
-    required: true
-  },
+  
   location: {
     coordinates: {
       type: [Number], // [lng, lat]
-      index: '2dsphere'
+      
     },
     district: String,
     subcounty: String,
@@ -27,12 +24,10 @@ const SensorSchema = new mongoose.Schema({
   installedAt: {
     type: Date,
     default: Date.now
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'maintenance'],
-    default: 'active'
   }
+  
 }, { timestamps: true });
+
+SensorSchema.index({ 'location.coordinates': '2dsphere' });
 
 module.exports = mongoose.model('Sensor', SensorSchema);

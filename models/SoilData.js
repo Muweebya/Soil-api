@@ -12,7 +12,7 @@ const SoilDataSchema = new mongoose.Schema({
     coordinates: {
       type: [Number], // [lng, lat]
       required: true,
-      index: '2dsphere'
+      
     },
     district: { type: String, required: true },
     subcounty: String,
@@ -27,8 +27,8 @@ const SoilDataSchema = new mongoose.Schema({
     nitrogen: Number,
     phosphorus: Number,
     potassium: Number,
-    electricalConductivity: Number,
-    organicMatter: Number
+   
+   
     //HUMIDITY
 
 
