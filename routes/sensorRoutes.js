@@ -3,7 +3,7 @@ const router = express.Router();
 const Sensor = require('../models/Sensor');
 
 // Register a new sensor
-router.post('/', async (req, res) => {
+router.post('/registerSensor', async (req, res) => {
   try {
     const sensor = new Sensor(req.body);
     await sensor.save();
