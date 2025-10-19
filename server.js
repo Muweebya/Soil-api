@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
+const cors = require('cors');
 const passport = require('passport');
 const sensorRoutes = require('./routes/sensorRoutes');
 const soilRoutes = require('./routes/soilRoutes');
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use(express.urlencoded({ extended: true })); //helps to parse data from forms
 //express session configs
 app.use(session);
+app.use(cors());
 
 
 //Passprt setup
