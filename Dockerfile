@@ -31,13 +31,8 @@ COPY --from=builder /app ./
 # Install only production deps in the runtime image
 RUN npm ci --only=production 2>/dev/null || npm install --production
 
-# Use PORT env provided by Railway; default to 3000 for local runs
-ENV PORT=${PORT:-3000}
 
-# Healthcheck (optional) - adjust path if your app has a health endpoint
-# HEALTHCHECK --interval=30s --timeout=5s --start-period=5s CMD wget -qO- http://localhost:$PORT/ || exit 1
-
-EXPOSE ${PORT}
+EXPOSE 5000
 
 # Use the start script in package.json; ensure "start" is defined there.
 # If your entry is e.g. index.js, app.js, or dist/index.js, adjust the CMD below.
