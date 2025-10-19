@@ -8,7 +8,7 @@ const soilRoutes = require('./routes/soilRoutes');
 const farmerRoutes = require('./routes/farmerRoutes');
 const authRoutes = require('./routes/authRoutes');
 require('dotenv').config();
-const cors = require('cors');
+
 const session = require('express-session')({
   secret: "secret",
   resave: false,
