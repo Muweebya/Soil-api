@@ -35,7 +35,7 @@ router.get('/:sensorId', async (req, res) => {
 });
 
 // Update a sensor
-router.put('/:sensorId', async (req, res) => {
+router.put('/updateSensor/:sensorId', async (req, res) => {
   try {
     const sensor = await Sensor.findOneAndUpdate(
       { sensorId: req.params.sensorId },
@@ -50,7 +50,7 @@ router.put('/:sensorId', async (req, res) => {
 });
 
 // Delete a sensor
-router.delete('/:sensorId', async (req, res) => {
+router.delete('/deleteSensor/:sensorId', async (req, res) => {
   try {
     const sensor = await Sensor.findOneAndDelete({ sensorId: req.params.sensorId });
     if (!sensor) return res.status(404).json({ error: 'Sensor not found' });

@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const sensorRoutes = require('./routes/sensorRoutes');
 const soilRoutes = require('./routes/soilRoutes');
