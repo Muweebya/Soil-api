@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all soil readings
-router.get('/', async (req, res) => {
+router.get('/getReadings', async (req, res) => {
   try {
     const data = await SoilData.find().sort({ timestamp: -1 }).limit(100);
     res.json(data);
